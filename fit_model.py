@@ -46,16 +46,13 @@ model = tf.keras.Model(inputs=input_layer, outputs=output_layer)
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# Обучение модели
 model.fit(input_sequences, np.array(output_sequences), epochs=75)
 
-# Пример взаимодействия с моделью
 input_text = "В округе ограбили магазин"
 input_sequence = tokenizer.texts_to_sequences([input_text])
 input_sequence = pad_sequences(input_sequence, maxlen=max_seq_length, padding='post')
 output_sequence = model.predict(input_sequence)
 
-# Декодирование вывода модели в текст
 decoded_output = tokenizer.sequences_to_texts([np.argmax(output_sequence[0], axis=-1)])[0]
 print("Вывод:", decoded_output)
 
