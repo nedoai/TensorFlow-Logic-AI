@@ -3,7 +3,6 @@ import tensorflow as tf
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
 
-# Примеры обучающих данных
 training_data = []
 with open(r"Logic_v1/logic.txt", "r", encoding="utf-8") as file:
     for line in file:
@@ -12,28 +11,23 @@ with open(r"Logic_v1/logic.txt", "r", encoding="utf-8") as file:
             premise, conclusion = line.split("|")
             training_data.append((premise.strip(), conclusion.strip()))
 
-# Разделение на входные и выходные данные
 inputs = [data[0] for data in training_data]
 outputs = [data[1] for data in training_data]
 
-# Создание токенизатора
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(inputs + outputs)
 
-# Преобразование текстовых данных в последовательности чисел
 input_sequences = tokenizer.texts_to_sequences(inputs)
 output_sequences = tokenizer.texts_to_sequences(outputs)
 
-# Подгонка последовательностей до одинаковой длины
 max_seq_length = max(max(map(len, input_sequences)), max(map(len, output_sequences)))
 input_sequences = pad_sequences(input_sequences, maxlen=max_seq_length, padding='post')
 output_sequences = pad_sequences(output_sequences, maxlen=max_seq_length, padding='post')
 
-# Создание модели с трансформером
 vocab_size = len(tokenizer.word_index) + 1
-embedding_dim = 100  # Размерность векторного представления слов
-num_heads = 4  # Количество голов в механизме внимания
-num_transformer_layers = 4  # Количество слоев трансформера
+embedding_dim = 100
+num_heads = 4
+num_transformer_layers = 4
 
 input_layer = tf.keras.layers.Input(shape=(max_seq_length,))
 embedding_layer = tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_seq_length)(input_layer)
